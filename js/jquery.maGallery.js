@@ -1,6 +1,6 @@
 /*
 
-lastupdate:2011-07-01
+lastupdate:2011-07-08
 
 */
 
@@ -8,18 +8,18 @@ lastupdate:2011-07-01
 	$.fn.maGallery = function(opt) {
 		
 		var opt = $.extend({
-			effect : 'fade',
-			speed : 5000,
-			innnerClass : 'galleryBg',
+			effect       : 'fade',
+			speed        : 5000,
+			innnerClass  : 'galleryBg',
 			currentClass : 'current',
-			hoverClass : 'hover',
-			dataAttr : 'data-repImg',
-			bgLink : true,
-			thumbLink : true,
-			slideSpeed : 1000,
-			repSpeed : 1000,
-			delay : true,
-			easing : 'linear'
+			hoverClass   : 'hover',
+			dataAttr     : 'data-repImg',
+			bgLink       : true,
+			thumbLink    : true,
+			slideSpeed   : 1000,
+			repSpeed     : 1000,
+			delay        : true,
+			easing       : 'linear'
 		}, opt);
 		
 		var $canvas;
@@ -156,7 +156,7 @@ lastupdate:2011-07-01
 		
 		this.each(function() {
 			var $this = $(this);
-             
+			
 			$('li img',$this).each(function(i){
 				var cacheImage = new Image();
 				cacheImage.src = $(this).attr(opt.dataAttr);
@@ -168,7 +168,7 @@ lastupdate:2011-07-01
 			$canvas = $('.'+opt.innnerClass,$this);
 			defSize = $('li',$this).size();
 			clone = $('li',$this).clone();
-			clone2 = $('li',$this).clone();
+			clone2 = $('li',$this).clone();
 			$('ul',$this).append(clone);
 			$('ul',$this).prepend(clone2);
 			$('ul li',$this).eq(defSize).addClass(opt.currentClass);
@@ -178,10 +178,10 @@ lastupdate:2011-07-01
 			$('li',$this).each(function(i){
 				var $li = $(this);
 				var wid = parseInt($li.width());
-				var ml = parseInt($li.css('marginLeft'));
-				var mr = parseInt($li.css('marginRight'));
-				var pl = parseInt($li.css('paddingLeft'));
-				var pr = parseInt($li.css('paddingRight'));
+				var ml  = parseInt($li.css('marginLeft'));
+				var mr  = parseInt($li.css('marginRight'));
+				var pl  = parseInt($li.css('paddingLeft'));
+				var pr  = parseInt($li.css('paddingRight'));
 				var blw = !isNaN(parseInt($li.css('borderLeftWidth'))) ? parseInt($li.css('borderLeftWidth')) : 0 ;
 				var brw = !isNaN(parseInt($li.css('border-right-width'))) ? parseInt($li.css('border-right-width')) : 0 ;
 				var cLi = 0;
@@ -240,13 +240,13 @@ lastupdate:2011-07-01
 			
 			$btnL.bind('click',function(e){
 			clearInterval(timer);
-				thumbMove($this,$current.next(),-1);
+				thumbMove($this,$current.prev(),1);
 				timer = setInterval(function(){thumbMove($this,$current.next(),-1);},opt.speed);
 				e.preventDefault();
 			});
 			$btnR.bind('click',function(e){
 				clearInterval(timer);
-				thumbMove($this,$current.prev(),1);
+				thumbMove($this,$current.next(),-1);
 				timer = setInterval(function(){thumbMove($this,$current.next(),-1);},opt.speed);
 				e.preventDefault();
 			});
