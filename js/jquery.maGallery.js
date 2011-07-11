@@ -1,6 +1,6 @@
 /*
 
-lastupdate:2011-07-08
+lastupdate:2011-07-11
 
 */
 
@@ -14,6 +14,8 @@ lastupdate:2011-07-08
 			currentClass : 'current',
 			hoverClass   : 'hover',
 			dataAttr     : 'data-repImg',
+			btnL         : '#btnL',
+			btnR         : '#btnR',
 			bgLink       : true,
 			thumbLink    : true,
 			slideSpeed   : 1000,
@@ -24,6 +26,8 @@ lastupdate:2011-07-08
 		
 		var $canvas;
 		var $current;
+		var $btnL;
+		var $btnR;
 		
 		var repImg;
 		var timer;
@@ -45,7 +49,7 @@ lastupdate:2011-07-08
 		}
 
 		function anchorSet(){
-			$canvas.unbind('click');
+			$canvas.unbind('click mouseover');
 			var href;
 			var $anchor = $current.find('a');
 			href = $anchor.attr('href');
@@ -64,8 +68,15 @@ lastupdate:2011-07-08
 						location.href = href;
 					}
 				});
+				
+				$canvas.bind('mouseover',function(){
+					$canvas.addClass(opt.hoverClass);
+				}).bind('mouseout',function(){
+					$canvas.removeClass(opt.hoverClass);
+				});
+				
 			}else{
-				$canvas.css({cursor:'default'}).unbind('click');
+				$canvas.css({cursor:'default'}).unbind('click mouseover');
 			}
 		}
 		
@@ -228,13 +239,12 @@ lastupdate:2011-07-08
 				backgroundRepeat:'no-repeat'
 			});
 			
-			$btnL = $('#btnL',$this);
-			$btnR = $('#btnR',$this);
+			$btnL = $(btnL,$this);
+			$btnR = $(btnR,$this);
 			
-			$('ul li',$this).hover(function(){
+			$('ul li',$this).bind('mouseover',function(){
 				$(this).addClass(opt.hoverClass);
-			},
-			function(){
+			}).bind('mouseout',function(){
 				$(this).removeClass(opt.hoverClass);
 			});
 			
