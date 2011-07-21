@@ -1,6 +1,6 @@
 /*
 
-lastupdate:2011-07-11
+lastupdate:2011-07-21
 
 */
 
@@ -21,7 +21,8 @@ lastupdate:2011-07-11
 			slideSpeed   : 1000,
 			repSpeed     : 1000,
 			delay        : true,
-			easing       : 'linear'
+			easing       : 'linear',
+			sideMove     : true
 		}, opt);
 		
 		var $canvas;
@@ -121,6 +122,9 @@ lastupdate:2011-07-11
 		
 		function thumbMove($this,$target,times){
 			var isPN;
+			var moveObj;
+			var defObj;
+			
 			if(times > 0){
 				isPN = true;
 			}else if (times < 0){
@@ -128,18 +132,27 @@ lastupdate:2011-07-11
 			}else{
 				return false;
 			}
-
+			
 			var moveWidth = liWidth * times;
 			moveWidth = moveWidth+'px';
 			repImg =$('img',$target).attr(opt.dataAttr);
+			
+			if(opt.sideMove){
+				moveObj = {marginLeft:'+='+moveWidth};
+				defObj = {marginLeft:'-'+defMgn+'px'};
+			}else{
+				moveObj = {marginTop:'+='+moveWidth};
+				defObj = {marginTop:'-'+defMgn+'px'};
+			}
+			
 			$('ul',$this).not(':animated')
 				.animate(
-					{marginLeft:'+='+moveWidth},
+					moveObj,
 					{
 						duration:opt.slideSpeed,
 						easing:opt.easing,
 						complete:function(){
-							$('ul',$this).css({marginLeft:'-'+defMgn+'px'});
+							$('ul',$this).css(defObj);
 							for(var i=1;i<=Math.abs(times);i++){
 								if(isPN){
 									$('ul',$this).prepend($('ul li:last',$this));
@@ -186,15 +199,36 @@ lastupdate:2011-07-11
 			$current = $('.'+opt.currentClass,$this);
 			repImg = $('ul .'+opt.currentClass+' img',$this).attr(opt.dataAttr);
 			
+			var wayMethod,margin1,margin2,padding1,padding2,border1,boder2;
+			
+			if(opt.sideMove){
+				wayMethod = 'width';
+				margin1 = 'marginLeft';
+				margin2 = 'marginRight';
+				padding1 = 'paddingLeft';
+				padding2 = 'paddingRight';
+				border1 = 'borderLeftWidth';
+				border2 = 'borderRightWidth';
+			}else{
+				wayMethod = 'height';
+				margin1 = 'marginTop';
+				margin2 = 'marginBottom';
+				padding1 = 'paddingTop';
+				padding2 = 'paddingBottom';
+				border1 = 'borderTopWidth';
+				border2 = 'borderBottomWidth';
+			}
+			
+			
 			$('li',$this).each(function(i){
 				var $li = $(this);
-				var wid = parseInt($li.width());
-				var ml  = parseInt($li.css('marginLeft'));
-				var mr  = parseInt($li.css('marginRight'));
-				var pl  = parseInt($li.css('paddingLeft'));
-				var pr  = parseInt($li.css('paddingRight'));
-				var blw = !isNaN(parseInt($li.css('borderLeftWidth'))) ? parseInt($li.css('borderLeftWidth')) : 0 ;
-				var brw = !isNaN(parseInt($li.css('border-right-width'))) ? parseInt($li.css('border-right-width')) : 0 ;
+				var wid = parseInt($li[wayMethod]());
+				var ml  = parseInt($li.css(margin1));
+				var mr  = parseInt($li.css(margin2));
+				var pl  = parseInt($li.css(padding1));
+				var pr  = parseInt($li.css(padding2));
+				var blw = !isNaN(parseInt($li.css(border1))) ? parseInt($li.css(border1)) : 0 ;
+				var brw = !isNaN(parseInt($li.css(border2))) ? parseInt($li.css(border2)) : 0 ;
 				var cLi = 0;
 				
 				ulWidth += wid+ml+mr+pl+pr+blw+brw+1;
@@ -207,15 +241,24 @@ lastupdate:2011-07-11
 			alterIndex($this);
 			
 			liHarf = Math.floor(liWidth / 2);
-			var parentHarf = Math.floor(($('ul',$this).parent().width() + parseInt($('ul',$this).parent().css('paddingLeft')) + parseInt($('ul',$this).parent().css('paddingRight'))) / 2);
+			var parentHarf = Math.floor(($('ul',$this).parent()[wayMethod]() + parseInt($('ul',$this).parent().css(padding1)) + parseInt($('ul',$this).parent().css(padding2))) / 2);
 			defMgn = (liWidth*defSize)-(parentHarf)+liHarf;
-			
-			$('ul',$this).css(
-				{
-					marginLeft:'-'+defMgn+'px',
-					width:ulWidth+'px'
-				}
-			);
+				
+			if(opt.sideMove){
+				$('ul',$this).css(
+					{
+						marginLeft:'-'+defMgn+'px',
+						width:ulWidth+'px'
+					}
+				);
+			}else{
+				$('ul',$this).css(
+					{
+						marginTop:'-'+defMgn+'px',
+						height:ulWidth+'px'
+					}
+				);
+			}
 			
 			galleryHeight = ($this.height()+parseInt($this.css('paddingTop'))+parseInt($this.css('paddingBottom')))+'px';
 			
@@ -239,8 +282,8 @@ lastupdate:2011-07-11
 				backgroundRepeat:'no-repeat'
 			});
 			
-			$btnL = $(btnL,$this);
-			$btnR = $(btnR,$this);
+			$btnL = $(opt.btnL,$this);
+			$btnR = $(opt.btnR,$this);
 			
 			$('ul li',$this).bind('mouseover',function(){
 				$(this).addClass(opt.hoverClass);
