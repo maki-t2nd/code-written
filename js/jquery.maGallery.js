@@ -1,6 +1,6 @@
 /*
 
-lastupdate:2011-07-21
+lastupdate:2011-07-25
 
 */
 
@@ -25,161 +25,168 @@ lastupdate:2011-07-21
 			sideMove     : true
 		}, opt);
 		
-		var $canvas;
-		var $current;
-		var $btnL;
-		var $btnR;
-		
-		var repImg;
-		var timer;
-		var defSize = 0;
-		var defMgn = 0;
-		var clone;
-		var clone2;
-		var ulWidth = 0;
-		var liWidth = 0;
-		var liHarf = 0;
-		var galleryHeight;
-		var times;
-		var cache = [];
-		
-		function alterIndex($this){
-			$('li',$this).each(function(i){
-				$(this).data('i',i);
-			});
-		}
-
-		function anchorSet(){
-			$canvas.unbind('click mouseover');
-			var href;
-			var $anchor = $current.find('a');
-			href = $anchor.attr('href');
-			if(!(href == '#' || href == '' || href == undefined)){
-				$canvas.css({cursor:'pointer'}).bind('click',function(){
-					if(!!$anchor.attr('target')){
-						var target= $anchor.attr('target');
-							switch(target){
-								case '_blank':
-									window.open(href);
-									break;
-								default:
-								location.href = href;
-							}
-					}else{
-						location.href = href;
-					}
-				});
-				
-				$canvas.bind('mouseover',function(){
-					$canvas.addClass(opt.hoverClass);
-				}).bind('mouseout',function(){
-					$canvas.removeClass(opt.hoverClass);
-				});
-				
-			}else{
-				$canvas.css({cursor:'default'}).unbind('click mouseover');
-			}
-		}
-		
-		function repImage(){
-			if(opt.bgLink){
-				anchorSet();
-			}
-			switch(opt.effect){
-				case 'fade':
-					$('.galleryCurrent',$canvas).css({opacity:'0.1',backgroundImage:'url('+repImg+')'})
-					.animate({opacity:'1'},{duration:opt.repSpeed});
-				break;
-				case 'cross':
-					$('<div class="inner galleryNext" />').appendTo($canvas)
-						.css({
-							position:'absolute',
-							top:'0',
-							left:'0',
-							width:'100%',
-							height:galleryHeight,
-							backgroundImage:"url("+repImg+")",
-							backgroundPosition:'center top',
-							backgroundRepeat:'no-repeat',
-							opacity:'0'
-						})
-						.not(':animated').animate(
-							{opacity:'1'},
-							{duration:opt.repSpeed,queue:false}
-						);
-					$(' .galleryCurrent',$canvas).not(':animated').animate(
-						{opacity:'0'},
-						{duration:opt.repSpeed,queue:false,complete:
-							function(){
-								$(' .galleryCurrent',$canvas).remove();
-								$(' .galleryNext',$canvas).addClass('galleryCurrent').removeClass('galleryNext');
-							}
-						}
-					);
-				break;
-			}
-		}
-		
-		function thumbMove($this,$target,times){
-			var isPN;
-			var moveObj;
-			var defObj;
-			
-			if(times > 0){
-				isPN = true;
-			}else if (times < 0){
-				isPN = false;
-			}else{
-				return false;
-			}
-			
-			var moveWidth = liWidth * times;
-			moveWidth = moveWidth+'px';
-			repImg =$('img',$target).attr(opt.dataAttr);
-			
-			if(opt.sideMove){
-				moveObj = {marginLeft:'+='+moveWidth};
-				defObj = {marginLeft:'-'+defMgn+'px'};
-			}else{
-				moveObj = {marginTop:'+='+moveWidth};
-				defObj = {marginTop:'-'+defMgn+'px'};
-			}
-			
-			$('ul',$this).not(':animated')
-				.animate(
-					moveObj,
-					{
-						duration:opt.slideSpeed,
-						easing:opt.easing,
-						complete:function(){
-							$('ul',$this).css(defObj);
-							for(var i=1;i<=Math.abs(times);i++){
-								if(isPN){
-									$('ul',$this).prepend($('ul li:last',$this));
-								}else{
-									$('ul',$this).append($('ul li:first',$this));
-								}
-							}
-							alterIndex($this);
-							$current.removeClass(opt.currentClass);
-							$target.addClass(opt.currentClass);
-							$current = $target;
-							
-							if(opt.delay){
-								repImage();
-							}
-						},
-						queue:false
-					}
-				);
-				
-				if(!opt.delay){
-					repImage();
-				}
-		}
-		
 		this.each(function() {
 			var $this = $(this);
+			var $canvas;
+			var $current;
+			var $btnL;
+			var $btnR;
+			
+			var repImg;
+			var timer;
+			var defSize = 0;
+			var defMgn = 0;
+			var clone;
+			var clone2;
+			var ulWidth = 0;
+			var liWidth = 0;
+			var liHarf = 0;
+			var galleryHeight;
+			var times;
+			var cache = [];
+
+			
+			function alterIndex(){
+				$('li',$this).each(function(i){
+					$(this).data('i',i);
+				});
+			}
+	
+			function anchorSet(){
+				$canvas.unbind();
+				var href;
+				var $anchor = $current.find('a');
+				href = $anchor.attr('href');
+				if(!(href == '#' || href == '' || href == undefined)){
+					$canvas.css({cursor:'pointer'}).bind('click',function(){
+						if(!!$anchor.attr('target')){
+							var target= $anchor.attr('target');
+								switch(target){
+									case '_blank':
+										window.open(href);
+										break;
+									default:
+									location.href = href;
+								}
+						}else{
+							location.href = href;
+						}
+					});
+					
+					$canvas.bind('mouseover',function(){
+						$canvas.addClass(opt.hoverClass);
+						clearInterval(timer);
+					}).bind('mousemove',function(){
+						$canvas.addClass(opt.hoverClass);
+						clearInterval(timer);
+					}).bind('mouseout',function(){
+						$canvas.removeClass(opt.hoverClass);
+						timer = setInterval(function(){
+							thumbMove($current.next(),-1);
+						},opt.speed);
+					});
+					
+				}else{
+					$canvas.css({cursor:'default'}).unbind();
+				}
+			}
+			
+			function repImage(){
+				if(opt.bgLink){
+					anchorSet();
+				}
+				switch(opt.effect){
+					case 'fade':
+						$('.galleryCurrent',$canvas).css({opacity:'0.1',backgroundImage:'url('+repImg+')'})
+						.animate({opacity:'1'},{duration:opt.repSpeed});
+					break;
+					case 'cross':
+						$('<div class="inner galleryNext" />').appendTo($canvas)
+							.css({
+								position:'absolute',
+								top:'0',
+								left:'0',
+								width:'100%',
+								height:galleryHeight,
+								backgroundImage:"url("+repImg+")",
+								backgroundPosition:'center top',
+								backgroundRepeat:'no-repeat',
+								opacity:'0'
+							})
+							.not(':animated').animate(
+								{opacity:'1'},
+								{duration:opt.repSpeed,queue:false}
+							);
+						$(' .galleryCurrent',$canvas).not(':animated').animate(
+							{opacity:'0'},
+							{duration:opt.repSpeed,queue:false,complete:
+								function(){
+									$(' .galleryCurrent',$canvas).remove();
+									$(' .galleryNext',$canvas).addClass('galleryCurrent').removeClass('galleryNext');
+								}
+							}
+						);
+					break;
+				}
+			}
+			
+			function thumbMove($target,times){
+				var isPN;
+				var moveObj;
+				var defObj;
+				
+				if(times > 0){
+					isPN = true;
+				}else if (times < 0){
+					isPN = false;
+				}else{
+					return false;
+				}
+				
+				var moveWidth = liWidth * times;
+				moveWidth = moveWidth+'px';
+				repImg =$('img',$target).attr(opt.dataAttr);
+				
+				if(opt.sideMove){
+					moveObj = {marginLeft:'+='+moveWidth};
+					defObj = {marginLeft:'-'+defMgn+'px'};
+				}else{
+					moveObj = {marginTop:'+='+moveWidth};
+					defObj = {marginTop:'-'+defMgn+'px'};
+				}
+				
+				$('ul',$this).not(':animated')
+					.animate(
+						moveObj,
+						{
+							duration:opt.slideSpeed,
+							easing:opt.easing,
+							complete:function(){
+								$('ul',$this).css(defObj);
+								for(var i=1;i<=Math.abs(times);i++){
+									if(isPN){
+										$('ul',$this).prepend($('ul li:last',$this));
+									}else{
+										$('ul',$this).append($('ul li:first',$this));
+									}
+								}
+								alterIndex($this);
+								$current.removeClass(opt.currentClass);
+								$target.addClass(opt.currentClass);
+								$current = $target;
+								
+								if(opt.delay){
+									repImage();
+								}
+							},
+							queue:false
+						}
+					);
+					
+					if(!opt.delay){
+						repImage();
+					}
+			}
 			
 			$('li img',$this).each(function(i){
 				var cacheImage = new Image();
@@ -238,7 +245,7 @@ lastupdate:2011-07-21
 				}
 			});
 			
-			alterIndex($this);
+			alterIndex();
 			
 			liHarf = Math.floor(liWidth / 2);
 			var parentHarf = Math.floor(($('ul',$this).parent()[wayMethod]() + parseInt($('ul',$this).parent().css(padding1)) + parseInt($('ul',$this).parent().css(padding2))) / 2);
@@ -292,15 +299,15 @@ lastupdate:2011-07-21
 			});
 			
 			$btnL.bind('click',function(e){
-			clearInterval(timer);
-				thumbMove($this,$current.prev(),1);
-				timer = setInterval(function(){thumbMove($this,$current.next(),-1);},opt.speed);
+				clearInterval(timer);
+				thumbMove($current.prev(),1);
+				timer = setInterval(function(){thumbMove($current.next(),-1);},opt.speed);
 				e.preventDefault();
 			});
 			$btnR.bind('click',function(e){
 				clearInterval(timer);
-				thumbMove($this,$current.next(),-1);
-				timer = setInterval(function(){thumbMove($this,$current.next(),-1);},opt.speed);
+				thumbMove($current.next(),-1);
+				timer = setInterval(function(){thumbMove($current.next(),-1);},opt.speed);
 				e.preventDefault();
 			});
 			
@@ -313,14 +320,14 @@ lastupdate:2011-07-21
 					var $target = $(this);
 					times = $current.data('i') - $target.data('i');
 					clearInterval(timer);
-					thumbMove($this,$target,times);
-					timer = setInterval(function(){thumbMove($this,$current.next(),-1);},opt.speed);
+					thumbMove($target,times);
+					timer = setInterval(function(){thumbMove($current.next(),-1);},opt.speed);
 					e.preventDefault();
 				});
 			}
 			
 			timer = setInterval(function(){
-				thumbMove($this,$current.next(),-1);
+				thumbMove($current.next(),-1);
 			},opt.speed);
 			
 		});
