@@ -1,3 +1,9 @@
+/*
+
+lastupdate:2011-08-08
+
+*/
+
 (function($){
 	$.fn.areaSlide = function(opt) {
 		
@@ -43,7 +49,7 @@
 				if(current){
 					$prev.bind('click',function(e){
 						slide(false);
-						current--;console.log(current);
+						current--;
 						addEvent();
 						e.preventDefault();
 					});
@@ -57,7 +63,7 @@
 				if(current != len){
 					$next.bind('click',function(e){
 						slide(true);
-						current++;console.log(current);
+						current++;
 						addEvent();
 						e.preventDefault();
 					});
