@@ -16,6 +16,8 @@ lastupdate:2011-09-08
 			curClass:'current',
 			canvasClass:'.canvas',
 			controlClass:'.control',
+			txtClass:'.slide-txt',
+			delayAttr:'data-delay',
 			mode:true
 		}, opt);
 		
@@ -34,7 +36,6 @@ lastupdate:2011-09-08
 			
 			var canvasMove = function(times){
 				var plusMag = 400;
-				var defMag;
 				var slideMag = 0;
 				var $targetAry = new Array();
 				
@@ -49,10 +50,14 @@ lastupdate:2011-09-08
 				}
 				
 				if(opt.mode){
-					slideMag = parseInt($target.data('defMag')) + plusMag;
-					$('.slide-txt',$target).css({marginLeft:slideMag+'px'});
+					$('li:not(.'+opt.curClass+')',$canvas).find(opt.txtClass).each(function(i){
+						var $text = $(this);
+						slideMag = parseInt($text.data('defMag')) + plusMag;
+						$text.css({marginLeft:slideMag+'px'});
+						$targetAry[i] = $text;
+					});
 				}else{
-					$('li:not(.'+opt.curClass+')',$canvas).find('.slide-txt').each(function(i){
+					$('li:not(.'+opt.curClass+')',$canvas).find(opt.txtClass).each(function(i){
 						var $text = $(this);
 						$text.css({
 							'-webkit-transform':'translate('+plusMag+'px,0)',
@@ -73,21 +78,21 @@ lastupdate:2011-09-08
 							complete:function(){
 								var spd;
 								if(opt.mode){
-									spd = parseInt($('.slide-txt',$target).attr('data-delay'));
-									if(!spd){
-										spd = 300;
-									};
-									$('.slide-txt',$target).not(':animated').animate(
-										{marginLeft:$(this).data('defMag')},
-										{duration:spd,easing:opt.jsEasing,
-										complete:function(){
-											alterIndex(times);
-										},
-										queue:false}
-									);
+									$.each($targetAry,function(i,$text){
+										spd = parseInt($text.attr(opt.delayAttr));
+										if(!spd){
+											spd = 300;
+										};
+										$text.not(':animated').animate(
+											{marginLeft:$text.data('defMag')},
+											{duration:spd,easing:opt.jsEasing,
+											queue:false}
+										);
+									});
+									alterIndex(times);
 								}else{
 									$.each($targetAry,function(i,$text){
-										spd = parseInt($text.attr('data-delay'));
+										spd = parseInt($text.attr(opt.delayAttr));
 										if(!spd){
 											spd = 300;
 										};
@@ -98,10 +103,8 @@ lastupdate:2011-09-08
 											'-moz-transition':'-moz-transform '+spd+'ms '+opt.cssEasing
 										})
 									});
-									
 									alterIndex(times);
 								}
-								
 							},
 							queue:false
 						}
@@ -129,7 +132,7 @@ lastupdate:2011-09-08
 				width:canvasX+'px'
 			});
 			if(opt.mode){
-				$('.slide-txt',$canvas).each(function(){
+				$(opt.txtClass,$canvas).each(function(){
 					var $text = $(this);
 					$text.data('defMag',$text.css('marginLeft'));
 				});
