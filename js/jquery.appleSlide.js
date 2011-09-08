@@ -1,6 +1,6 @@
-/*
+﻿/*
 
-lastupdate:2011-09-07
+lastupdate:2011-09-08
 
 */
 
@@ -11,28 +11,56 @@ lastupdate:2011-09-07
 			speed:700,
 			interval:5000,
 			easing:'easeInCirc',
-			txtEasing:'easeInCirc',
+			jsEasing:'easeOutExpo',
+			cssEasing:'ease-out',
 			curClass:'current',
 			canvasClass:'.canvas',
-			controlClass:'.control'
+			controlClass:'.control',
+			mode:true
 		}, opt);
 		
 		this.each(function() {
+						   
+			var alterIndex = function(times){
+				imgCur-=times;
+				if(imgSize < imgCur){
+					$canvas.css({marginLeft:'-'+imgX+'px'});
+					imgCur = 1;
+				}
+				$('li',$this).removeClass(opt.curClass);
+				$('li',$canvas).eq(imgCur).addClass(opt.curClass);
+				$('li',$control).eq(imgCur-1).addClass(opt.curClass);
+			}
 			
 			var canvasMove = function(times){
-				var plusMag = 300;
+				var plusMag = 400;
 				var defMag;
 				var slideMag = 0;
+				var $targetAry = new Array();
+				
+				if(!times){
+					times = -1;
+				}
+				
 				var isPN = times > 0 ? true : false ;
 				
 				if(isPN){
 					plusMag *= -1
 				}
 				
-				defMag = $('.slide-txt',$target).css('marginLeft');
-				slideMag = parseInt(defMag) + plusMag;
-				console.log(slideMag);
-				$('.slide-txt',$target).css({marginLeft:slideMag+'px'});
+				if(opt.mode){
+					slideMag = parseInt($target.data('defMag')) + plusMag;
+					$('.slide-txt',$target).css({marginLeft:slideMag+'px'});
+				}else{
+					$('li:not(.'+opt.curClass+')',$canvas).find('.slide-txt').each(function(i){
+						var $text = $(this);
+						$text.css({
+							'-webkit-transform':'translate('+plusMag+'px,0)',
+							'-moz-transform':'translate('+plusMag+'px,0)'
+						});
+						$targetAry[i] = $text;
+					});
+				}
 				
 				var moveX = imgX * times;
 				
@@ -43,26 +71,36 @@ lastupdate:2011-09-07
 							duration:opt.speed,
 							easing:opt.easing,
 							complete:function(){
-								
-								var spd = parseInt($('.slide-txt',$target).attr('data-delay'));
-								if(!spd){
-									spd = 200;
-								};
-								$('.slide-txt',$target).not(':animated').animate(
-									{marginLeft:defMag},
-									{duration:spd,easing:opt.txtEasing,
-									complete:function(){
-										imgCur-=times;
-										if(imgSize < imgCur){
-											$canvas.css({marginLeft:'-'+imgX+'px'});
-											imgCur = 1;
-										}
-										$('li',$this).removeClass(opt.curClass);
-										$('li',$canvas).eq(imgCur).addClass(opt.curClass);
-										$('li',$control).eq(imgCur-1).addClass(opt.curClass);
-									},
-									queue:false}
-								);
+								var spd;
+								if(opt.mode){
+									spd = parseInt($('.slide-txt',$target).attr('data-delay'));
+									if(!spd){
+										spd = 300;
+									};
+									$('.slide-txt',$target).not(':animated').animate(
+										{marginLeft:$(this).data('defMag')},
+										{duration:spd,easing:opt.jsEasing,
+										complete:function(){
+											alterIndex(times);
+										},
+										queue:false}
+									);
+								}else{
+									$.each($targetAry,function(i,$text){
+										spd = parseInt($text.attr('data-delay'));
+										if(!spd){
+											spd = 300;
+										};
+										$text.css({
+											'-webkit-transform':'translate(0,0)',
+											'-webkit-transition':'-webkit-transform '+spd+'ms '+opt.cssEasing,
+											'-moz-transform':'translate(0,0)',
+											'-moz-transition':'-moz-transform '+spd+'ms '+opt.cssEasing
+										})
+									});
+									
+									alterIndex(times);
+								}
 								
 							},
 							queue:false
@@ -90,23 +128,30 @@ lastupdate:2011-09-07
 				marginLeft:'-'+imgX+'px',
 				width:canvasX+'px'
 			});
-			
+			if(opt.mode){
+				$('.slide-txt',$canvas).each(function(){
+					var $text = $(this);
+					$text.data('defMag',$text.css('marginLeft'));
+				});
+			}
 			$('li',$control).bind('click',function(){
+				var times;
 				var curIndex = $('li',$control).index($('.'+opt.curClass,$control));
 				var targetIndex = $('li',$control).index(this);
 				$target = $('li',$canvas).eq(targetIndex + 1);
 				times = curIndex - targetIndex;
+				if(!times){return false;}
 				clearInterval(timer);
 				canvasMove(times);
 				timer = setInterval(function(){
 					$target =  $('.'+opt.curClass,$canvas).next();
-					canvasMove(-1);
+					canvasMove();
 				},opt.interval);
 			});
 			
 			timer = setInterval(function(){
 				$target =  $('.'+opt.curClass,$canvas).next();
-				canvasMove(-1);
+				canvasMove();
 			},opt.interval);
 			
 			
