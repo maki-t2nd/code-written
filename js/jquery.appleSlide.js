@@ -1,6 +1,6 @@
 ﻿/*
 
-lastupdate:2011-09-08
+lastupdate:2011-09-12
 
 */
 
@@ -14,10 +14,13 @@ lastupdate:2011-09-08
 			jsEasing:'easeOutExpo',
 			cssEasing:'ease-out',
 			curClass:'current',
-			canvasClass:'.canvas',
-			controlClass:'.control',
-			txtClass:'.slide-txt',
-			delayAttr:'data-delay',
+			canvasClass:'canvas',
+			controlClass:'control',
+			txtClass:'slideTxt',
+			speedAttr:'data-speed',
+			magAttr:'data-mag',
+			txtDefSpeed:300,
+			txtDefMag:400,
 			mode:true
 		}, opt);
 		
@@ -35,7 +38,7 @@ lastupdate:2011-09-08
 			}
 			
 			var canvasMove = function(times){
-				var plusMag = 400;
+				var plusMag = 0;
 				var slideMag = 0;
 				var $targetAry = new Array();
 				
@@ -45,20 +48,35 @@ lastupdate:2011-09-08
 				
 				var isPN = times > 0 ? true : false ;
 				
-				if(isPN){
-					plusMag *= -1
-				}
+				$('li.'+opt.curClass,$canvas).css({zIndex:100});
+				$('li:not(.'+opt.curClass+')',$canvas).css({zIndex:50});
 				
 				if(opt.mode){
-					$('li:not(.'+opt.curClass+')',$canvas).find(opt.txtClass).each(function(i){
+					$('li:not(.'+opt.curClass+')',$canvas).find('.'+opt.txtClass).each(function(i){
 						var $text = $(this);
-						slideMag = parseInt($text.data('defMag')) + plusMag;
+						var defMag = $text.data('defMag');
+						plusMag = parseInt($text.attr(opt.magAttr));
+						if(isNaN(plusMag)){
+							plusMag = opt.txtDefMag
+						};
+						if(isPN){
+							plusMag *= -1
+						}
+						$text.stop().css({marginLeft:defMag});
+						slideMag = parseInt(defMag) + plusMag;
 						$text.css({marginLeft:slideMag+'px'});
 						$targetAry[i] = $text;
 					});
 				}else{
-					$('li:not(.'+opt.curClass+')',$canvas).find(opt.txtClass).each(function(i){
+					$('li:not(.'+opt.curClass+')',$canvas).find('.'+opt.txtClass).each(function(i){
 						var $text = $(this);
+						plusMag = parseInt($text.attr(opt.magAttr));
+						if(isNaN(plusMag)){
+							plusMag = opt.txtDefMag
+						};
+						if(isPN){
+							plusMag *= -1
+						}
 						$text.css({
 							'-webkit-transform':'translate('+plusMag+'px,0)',
 							'-moz-transform':'translate('+plusMag+'px,0)'
@@ -79,22 +97,24 @@ lastupdate:2011-09-08
 								var spd;
 								if(opt.mode){
 									$.each($targetAry,function(i,$text){
-										spd = parseInt($text.attr(opt.delayAttr));
+										spd = parseInt($text.attr(opt.speedAttr));
 										if(!spd){
-											spd = 300;
+											spd = opt.txtDefSpeed;
 										};
 										$text.not(':animated').animate(
 											{marginLeft:$text.data('defMag')},
 											{duration:spd,easing:opt.jsEasing,
+											complete:function(){
+											},
 											queue:false}
 										);
 									});
 									alterIndex(times);
 								}else{
 									$.each($targetAry,function(i,$text){
-										spd = parseInt($text.attr(opt.delayAttr));
+										spd = parseInt($text.attr(opt.speedAttr));
 										if(!spd){
-											spd = 300;
+											spd = opt.txtDefSpeed;
 										};
 										$text.css({
 											'-webkit-transform':'translate(0,0)',
@@ -112,8 +132,8 @@ lastupdate:2011-09-08
 			}
 			
 			var $this = $(this);
-			var $canvas = $(opt.canvasClass,$this);
-			var $control = $(opt.controlClass,$this);
+			var $canvas = $('.'+opt.canvasClass,$this);
+			var $control = $('.'+opt.controlClass,$this);
 			var $target;
 			var timer;
 			var imgX = $this.prop('offsetWidth');
@@ -131,8 +151,9 @@ lastupdate:2011-09-08
 				marginLeft:'-'+imgX+'px',
 				width:canvasX+'px'
 			});
+			$control.css({zIndex:1000});
 			if(opt.mode){
-				$(opt.txtClass,$canvas).each(function(){
+				$('.'+opt.txtClass,$canvas).each(function(){
 					var $text = $(this);
 					$text.data('defMag',$text.css('marginLeft'));
 				});
@@ -156,9 +177,6 @@ lastupdate:2011-09-08
 				$target =  $('.'+opt.curClass,$canvas).next();
 				canvasMove();
 			},opt.interval);
-			
-			
-			
 		});
 		return this;
 		
