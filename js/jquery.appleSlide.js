@@ -10,7 +10,7 @@ lastupdate:2011-09-12
 		var opt = $.extend({
 			speed:700,
 			interval:5000,
-			easing:'easeInCirc',
+			easing:'easeInExpo',
 			jsEasing:'easeOutExpo',
 			cssEasing:'ease-out',
 			curClass:'current',
@@ -64,7 +64,7 @@ lastupdate:2011-09-12
 						}
 						$text.stop().css({marginLeft:defMag});
 						slideMag = parseInt(defMag) + plusMag;
-						$text.css({marginLeft:slideMag+'px'});
+						$text.css({marginLeft:slideMag+'px',opacity:0});
 						$targetAry[i] = $text;
 					});
 				}else{
@@ -79,7 +79,8 @@ lastupdate:2011-09-12
 						}
 						$text.css({
 							'-webkit-transform':'translate('+plusMag+'px,0)',
-							'-moz-transform':'translate('+plusMag+'px,0)'
+							'-moz-transform':'translate('+plusMag+'px,0)',
+							opacity:0
 						});
 						$targetAry[i] = $text;
 					});
@@ -102,7 +103,7 @@ lastupdate:2011-09-12
 											spd = opt.txtDefSpeed;
 										};
 										$text.not(':animated').animate(
-											{marginLeft:$text.data('defMag')},
+											{marginLeft:$text.data('defMag'),opacity:1},
 											{duration:spd,easing:opt.jsEasing,
 											complete:function(){
 											},
@@ -117,6 +118,7 @@ lastupdate:2011-09-12
 											spd = opt.txtDefSpeed;
 										};
 										$text.css({
+											opacity:1,
 											'-webkit-transform':'translate(0,0)',
 											'-webkit-transition':'-webkit-transform '+spd+'ms '+opt.cssEasing,
 											'-moz-transform':'translate(0,0)',
