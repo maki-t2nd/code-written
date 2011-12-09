@@ -1,6 +1,6 @@
 /*
 
-lastupdate:2011-11-30
+lastupdate:2011-12-09
 
 */
 
@@ -17,6 +17,7 @@ lastupdate:2011-11-30
 			block   :'.block',
 			prev    :'.control .prev',
 			next    :'.control .next',
+			hoverClass:'hover',
 			animation:true,
 			vertical:true
 		}, opt);
@@ -25,6 +26,7 @@ lastupdate:2011-11-30
 			var $this    = $(this);
 			var $slider  = $(opt.slider,$this);
 			var $block   = $(opt.block,$this);
+			var $hover   = $('.'+opt.hoverClass,$this);
 			var $prev    = $(opt.prev,$this);
 			var $next    = $(opt.next,$this);
 			var len      = $block.size();
@@ -108,6 +110,26 @@ lastupdate:2011-11-30
 					slide(true);
 				},opt.aSpeed);
 				e.preventDefault();
+			});
+			
+			$block.live('mouseover',function(){
+				$(this).addClass(opt.hoverClass);
+			}).live('mouseout',function(){
+				$(this).removeClass(opt.hoverClass);
+			});
+			
+			$hover.live('click',function(){
+				$anchor = $(this).find('a').eq(0);
+				var href = $anchor.attr('href');
+				var target = $anchor.attr('target');
+				switch(target)
+				{
+					case '_blank':
+						window.open(href);
+					break;
+					default:
+						location.href = href;
+				}
 			});
 			
 			if(opt.animation){
