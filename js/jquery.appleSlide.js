@@ -32,7 +32,6 @@ lastupdate:2012-01-30
 						   
 			var alterIndex = function(times){
 				imgCur-=times;
-				console.log('imgSize:'+imgSize,'imgCur:'+imgCur);
 				if(imgSize < imgCur){
 					$canvas.css({marginLeft:'-'+imgX+'px'});
 					imgCur = 1;
