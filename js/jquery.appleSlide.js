@@ -1,6 +1,8 @@
 ﻿/*
 
-lastupdate:2011-09-12
+lastupdate:2012-01-30
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 */
 
@@ -19,6 +21,8 @@ lastupdate:2011-09-12
 			txtClass:'slideTxt',
 			speedAttr:'data-speed',
 			magAttr:'data-mag',
+			btnL:'btnL',
+			btnR:'btnR',
 			txtDefSpeed:300,
 			txtDefMag:400,
 			mode:true
@@ -28,9 +32,13 @@ lastupdate:2011-09-12
 						   
 			var alterIndex = function(times){
 				imgCur-=times;
+				console.log('imgSize:'+imgSize,'imgCur:'+imgCur);
 				if(imgSize < imgCur){
 					$canvas.css({marginLeft:'-'+imgX+'px'});
 					imgCur = 1;
+				}else if(!imgCur){
+					$canvas.css({marginLeft:'-'+imgX*imgSize+'px'});
+					imgCur = imgSize;
 				}
 				$('li',$this).removeClass(opt.curClass);
 				$('li',$canvas).eq(imgCur).addClass(opt.curClass);
@@ -169,6 +177,24 @@ lastupdate:2011-09-12
 				if(!times){return false;}
 				clearInterval(timer);
 				canvasMove(times);
+				timer = setInterval(function(){
+					$target =  $('.'+opt.curClass,$canvas).next();
+					canvasMove();
+				},opt.interval);
+			});
+			
+			$this.find('.'+opt.btnL).bind('click',function(){
+				clearInterval(timer);
+				canvasMove();	
+				timer = setInterval(function(){
+					$target =  $('.'+opt.curClass,$canvas).next();
+					canvasMove();
+				},opt.interval);
+			});
+			
+			$this.find('.'+opt.btnR).bind('click',function(){
+				clearInterval(timer);
+				canvasMove(1);	
 				timer = setInterval(function(){
 					$target =  $('.'+opt.curClass,$canvas).next();
 					canvasMove();
