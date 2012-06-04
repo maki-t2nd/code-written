@@ -1,6 +1,6 @@
 /*
 
-lastupdate:2011-12-09
+lastupdate:2012-06-04
 
 */
 
@@ -19,7 +19,7 @@ lastupdate:2011-12-09
 			next    :'.control .next',
 			hoverClass:'hover',
 			animation:true,
-			vertical:true
+			vertical:false
 		}, opt);
 		
 		this.each(function() {
@@ -42,11 +42,11 @@ lastupdate:2011-12-09
 			
 			if(opt.vertical){
 				margin = 'marginTop';
-				defRange = parseInt($block.eq(0).height());
+				defRange = parseInt($block.eq(0).outerHeight(true));
 				$slider.css({marginTop:'-'+defRange*len+'px'});
 			}else{
 				margin = 'marginLeft';
-				defRange = parseInt($block.eq(0).width());
+				defRange = parseInt($block.eq(0).outerWidth(true));
 				$slider.css({marginLeft:'-'+defRange*len+'px'});
 			}
 			
@@ -84,7 +84,7 @@ lastupdate:2011-12-09
 								if(bool){
 									$slider.append($(opt.block+':first',$this));
 								}else{
-									$slider.append($(opt.block+':last',$this));
+									$slider.prepend($(opt.block+':last',$this));
 								}
 								$slider.css({marginLeft:'-'+defRange*len+'px'});
 							}
