@@ -1,6 +1,6 @@
 /*
 
-lastupdate:2012-06-04
+lastupdate:2012-06-05
 
 */
 
@@ -10,16 +10,16 @@ lastupdate:2012-06-04
 	$.fn.areaSlide2 = function(opt) {
 		
 		var opt = $.extend({
-			speed   :1000,
-			aSpeed  :5000,
-			easing  :'linear',
-			slider  :'.slider',
-			block   :'.block',
-			prev    :'.control .prev',
-			next    :'.control .next',
-			hoverClass:'hover',
-			animation:true,
-			vertical:false
+			speed      : 1000,
+			aSpeed     : 5000,
+			easing     : 'linear',
+			slider     : '.slider',
+			block      : '.block',
+			prev       : '.control .prev',
+			next       : '.control .next',
+			hoverClass : 'hover',
+			animation  : false,
+			vertical   : false
 		}, opt);
 		
 		this.each(function() {
@@ -94,21 +94,23 @@ lastupdate:2012-06-04
 				
 			}
 			
+			function autoSlide(flag){
+				timer = setInterval(function(){
+					slide(flag);
+				},opt.aSpeed);
+			}
+			
 			$prev.bind('click',function(e){
 				clearInterval(timer);
 				slide(true);
-				timer = setInterval(function(){
-					slide(true);
-				},opt.aSpeed);
+				if(opt.animation) autoSlide(true);
 				e.preventDefault();
 			});
 		
 			$next.bind('click',function(e){
 				clearInterval(timer);
 				slide(false);
-				timer = setInterval(function(){
-					slide(true);
-				},opt.aSpeed);
+				if(opt.animation) autoSlide(true);
 				e.preventDefault();
 			});
 			
@@ -133,9 +135,7 @@ lastupdate:2012-06-04
 			});
 			
 			if(opt.animation){
-				timer = setInterval(function(){
-					slide(true);
-				},opt.aSpeed);
+				autoSlide(true);
 			}
 			
 		
