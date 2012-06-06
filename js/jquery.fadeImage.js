@@ -76,31 +76,32 @@ lastupdate:2012-06-06
 					
 					nextFade();
 				}
-			}
-			
-			function nextFade(){
-				$next.not(':animated').animate(
-					{opacity:'1'},
-					{duration:opt.fadeSpeed,queue:false,complete:
-						function(){
-							$canvas.find('.'+opt.current).removeClass(opt.current);
-							$next.addClass(opt.current);
-							if(opt.amtDisp) setTpl();
-						}
-					}
-				);
 				
-				if(opt.capDisp){
-					$nextCap.not(':animated').animate(
+				function nextFade(){
+					$next.not(':animated').animate(
 						{opacity:'1'},
 						{duration:opt.fadeSpeed,queue:false,complete:
 							function(){
-								$caption.find('.'+opt.current).removeClass(opt.current);
-								$nextCap.addClass(opt.current);
+								$canvas.find('.'+opt.current).removeClass(opt.current);
+								$next.addClass(opt.current);
+								if(opt.amtDisp) setTpl();
 							}
 						}
 					);
+					
+					if(opt.capDisp){
+						$nextCap.not(':animated').animate(
+							{opacity:'1'},
+							{duration:opt.fadeSpeed,queue:false,complete:
+								function(){
+									$caption.find('.'+opt.current).removeClass(opt.current);
+									$nextCap.addClass(opt.current);
+								}
+							}
+						);
+					}
 				}
+			
 			}
 			
 			function setTpl(){
