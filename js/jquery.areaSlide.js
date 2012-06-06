@@ -1,6 +1,6 @@
 /*
 
-lastupdate:2011-08-08
+lastupdate:2012-06-06
 
 */
 
@@ -48,6 +48,7 @@ lastupdate:2011-08-08
 				$next.removeClass(opt.disabled).unbind('click');
 				if(current){
 					$prev.bind('click',function(e){
+						if($(':animated').size()) return false;
 						slide(false);
 						current--;
 						addEvent();
@@ -62,6 +63,7 @@ lastupdate:2011-08-08
 				
 				if(current != len){
 					$next.bind('click',function(e){
+						if($(':animated').size()) return false;
 						slide(true);
 						current++;
 						addEvent();
