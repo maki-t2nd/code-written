@@ -1,6 +1,6 @@
 /*
 
-lastupdate:2012-06-06
+lastupdate:2012-06-07
 
 */
 
@@ -57,13 +57,13 @@ lastupdate:2012-06-06
 							
 				if(opt.cross){
 					$canvas.find('.'+opt.current).not(':animated').animate(
-						{opacity:'0'},
+						{opacity:0,zIndex:10},
 						{duration:opt.fadeSpeed,queue:false}
 					);
 					
 					if(opt.capDisp){
 						$caption.find('.'+opt.current).not(':animated').animate(
-							{opacity:'0'},
+							{opacity:0},
 							{duration:opt.fadeSpeed,queue:false}
 						);
 					}
@@ -71,7 +71,7 @@ lastupdate:2012-06-06
 					nextFade();
 					
 				}else{
-					$canvas.find('.'+opt.current).css({opacity:0});
+					$canvas.find('.'+opt.current).css({opacity:0,zIndex:10});
 					if(opt.capDisp) $caption.find('.'+opt.current).css({opacity:0});
 					
 					nextFade();
@@ -79,7 +79,7 @@ lastupdate:2012-06-06
 				
 				function nextFade(){
 					$next.not(':animated').animate(
-						{opacity:'1'},
+						{opacity:1,zIndex:100},
 						{duration:opt.fadeSpeed,queue:false,complete:
 							function(){
 								$canvas.find('.'+opt.current).removeClass(opt.current);
@@ -91,7 +91,7 @@ lastupdate:2012-06-06
 					
 					if(opt.capDisp){
 						$nextCap.not(':animated').animate(
-							{opacity:'1'},
+							{opacity:1},
 							{duration:opt.fadeSpeed,queue:false,complete:
 								function(){
 									$caption.find('.'+opt.current).removeClass(opt.current);
@@ -122,7 +122,7 @@ lastupdate:2012-06-06
 				opacity:0
 			});
 			
-			$canvas.find('li:first').addClass(opt.current);
+			$canvas.find('li:first').css({zIndex:100}).addClass(opt.current);
 			
 			if(opt.capDisp){
 				$caption.find('li:not(:first)').css({
