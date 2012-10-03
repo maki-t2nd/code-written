@@ -1,6 +1,6 @@
 /*
 
-lastupdate:2012-10-03 
+lastupdate:2012-10-03
 
 */
 
@@ -15,11 +15,13 @@ lastupdate:2012-10-03
 			easing     : 'easeOutBounce',
 			slider     : '.slider',
 			block      : '.block',
-			prev       : '.control .prev',
-			next       : '.control .next',
+			control    : '.control',
+			prev       : '.prev',
+			next       : '.next',
 			hoverClass : 'hover',
 			animation  : true,
-			vertical   : false
+			vertical   : false,
+			minSize    : null
 		}, opt);
 		
 		this.each(function() {
@@ -27,12 +29,15 @@ lastupdate:2012-10-03
 			var $slider  = $(opt.slider,$this);
 			var $block   = $(opt.block,$this);
 			var $hover   = $('.'+opt.hoverClass,$this);
+			var $control = $(opt.control,$this);
 			var $prev    = $(opt.prev,$this);
 			var $next    = $(opt.next,$this);
 			var len      = $block.size();
 			var current  = 0;
 			var defRange;
 			var timer;
+			var slidSize;
+			var blkSize;
 			
 			var $copyF = $block.clone();
 			var $copyR = $block.clone();
@@ -43,11 +48,22 @@ lastupdate:2012-10-03
 			if(opt.vertical){
 				margin = 'marginTop';
 				defRange = parseInt($block.eq(0).outerHeight(true));
-				$slider.css({marginTop:'-'+defRange*len+'px'});
+				$slider.css({
+					marginTop:'-'+defRange*len+'px'
+				});
 			}else{
 				margin = 'marginLeft';
 				defRange = parseInt($block.eq(0).outerWidth(true));
-				$slider.css({marginLeft:'-'+defRange*len+'px'});
+				$slider.css({
+					marginLeft:'-'+defRange*len+'px'
+				});
+			}
+			
+			if(opt.minSize != null){
+				if(opt.minSize > len){
+					opt.animation = false;
+					$control.remove();
+				}
 			}
 			
 			function slide(bool){
