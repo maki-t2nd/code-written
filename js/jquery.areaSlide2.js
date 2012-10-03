@@ -1,6 +1,6 @@
 /*
 
-lastupdate:2012-06-05
+lastupdate:2012-10-03
 
 */
 
@@ -12,13 +12,13 @@ lastupdate:2012-06-05
 		var opt = $.extend({
 			speed      : 1000,
 			aSpeed     : 5000,
-			easing     : 'linear',
+			easing     : 'easeOutBounce',
 			slider     : '.slider',
 			block      : '.block',
 			prev       : '.control .prev',
 			next       : '.control .next',
 			hoverClass : 'hover',
-			animation  : false,
+			animation  : true,
 			vertical   : false
 		}, opt);
 		
@@ -102,14 +102,14 @@ lastupdate:2012-06-05
 			
 			$prev.bind('click',function(e){
 				clearInterval(timer);
-				slide(true);
+				slide(false);
 				if(opt.animation) autoSlide(true);
 				e.preventDefault();
 			});
 		
 			$next.bind('click',function(e){
 				clearInterval(timer);
-				slide(false);
+				slide(true);
 				if(opt.animation) autoSlide(true);
 				e.preventDefault();
 			});
