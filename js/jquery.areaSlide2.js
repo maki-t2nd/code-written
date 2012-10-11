@@ -1,6 +1,6 @@
 /*
 
-lastupdate:2012-10-03
+lastupdate:2012-10-11
 
 */
 
@@ -49,13 +49,15 @@ lastupdate:2012-10-03
 				margin = 'marginTop';
 				defRange = parseInt($block.eq(0).outerHeight(true));
 				$slider.css({
-					marginTop:'-'+defRange*len+'px'
+					marginTop:'-'+defRange*len+'px',
+					height:defRange*len*3+'px'
 				});
 			}else{
 				margin = 'marginLeft';
 				defRange = parseInt($block.eq(0).outerWidth(true));
 				$slider.css({
-					marginLeft:'-'+defRange*len+'px'
+					marginLeft:'-'+defRange*len+'px',
+					width:defRange*len*3+'px'
 				});
 			}
 			
