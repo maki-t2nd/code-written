@@ -1,4 +1,4 @@
-$(function(){
+ACMS.Ready(function(){
 (function($){
 
 var styles = '';
